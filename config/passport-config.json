@@ -1,0 +1,19 @@
+{
+  "serverURI": "gluu.local.org",
+  "serverWebPort": 8090,
+    "clientId": "@!6A9B.628D.E664.CC6C!0001!F205.E5E8!0008!53C9.745A",
+  "keyPath": "/etc/certs/passport-rp.pem",
+  "keyId": "9cb54f95-ec54-4c9a-823f-334aac31e8c3",
+  "keyAlg": "RS512",
+  "umaScope": "https://gluu.local.org/oxauth/seam/resource/restv1/uma/scopes/passport_access",
+  "passportConfigAPI": "https://gluu.local.org/identity/seam/resource/restv1/passport/config",
+  "applicationStartpoint": "https://gluu.local.org/oxauth/auth/passport/passportlogin.htm",
+  "applicationEndpoint": "https://gluu.local.org/oxauth/auth/passport/passportpostlogin.htm",
+  "activeMQConf": {
+    "isEnabled": false,
+    "host": "",
+    "username": "",
+    "password": "",
+    "port": ""
+  }
+}
