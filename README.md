@@ -1,37 +1,36 @@
-# Passport Proxy
+##Openid passport – proxy 
 
-## Description
-This node proxy app allows the authentication of OpenID Connect clients to its respective Identity Provider(IP). It receives the issuer URL that the client is supposed to be authenticated against and sets the configuration parameters for the passport strategy with client and issuer info. Once the authentication succeeds it redirects the client to its respective callback URI registered on the IP.
+1. Client will register IP’s details to the server using GUI by ox-trust.
+    (0:20 to 0:35 in video)
+![](/images/Screenshot4.png)
+![](/images/Screenshot5.png)
 
-## Diagram
+2. passport-proxy server will fetch detail using passport-config.JSON which is created by gluu server it self during installation.
 
-![](/proxy-workflow.png)
+3. Here passportConfigAPI is UMA protected to the passport-proxy server will also do processes for UMA.
+![](/images/Passportconfigjson.png)
 
-## Client Request
-The client request for authentication is done by adding a query parameter "issuer" when requesting the "auth/openidconnect" route of the proxy.
+4. The client can have UI like this for login using a proxy server.
+    (0:45 in video)
+![](/images/Proxy-docs.png)
+Here we can see that client has created to buttons to log in two different IP’s using the passport-proxy server.	
+5. When user will client on click on Any of button to login client will call send get a request to the proxy server. 
+<br><u>For ex. .../auth/openidconnect?clientID=@!2EA3.DABD.58DD.487D!0001!DF6B.BF9B!0008!BCFE.DAC7.E3BE.E4A3&state=eyJvcCI6Imh0dHBzOi8vZXJhc211c2Rldi5nbHV1Lm9yZyIsInN0YXRlIjoiMTNWcVFVUUh1ZSJ9
+<br><br>state = “base 64 of op and random state.</u><br>
+6. Passport server will try to match clientid from predefined configurations and initialize passport strategy for According to matching configurations from oxTrust.
 
-    https://example.domain.com/auth/openidconnect?issuer=example.issuerURL.org
+7. Using passport Authentication strategy user will be redirected to IP’s login page.
+(1:15 for ce-dev IP and 0:55 for erasmus IP in video)
+![](/images/Proxy-docs1.png)
+8. Here redirect URI must be an end point of the proxy server because passport will require Token from redirected URI to fetch user info.
+9. After successful login passport server will be call user-info API and fetch user info.
+10. The server will check if user entry is available or not and Will create a new entry if not available.
+11. After storing info to local-LDAP, the proxy server will also create an expairable key pair entry to Redis server.
+12. The server will send Redis key to the client as a token to get user info.
+13. The client will be able to fetch user info using the same token as far as Token is not expired.
+      (1:10 in for ce-dev and 1:44 in Erasmus in video)
+![](/images/Screenshot3.png)
 
-## Strategy Configuration
-The strategy configuration uses a modified and improved passport-openidconnect strategy. Originally this strategy requires the parameters that could be assigned automatically through discovery procedure applied to the issuer URL, like authorization endpoint, token endpoint and userInfo endpoint. It also requires clientID, clientSecret and callbackURL. Those are saved on a js file that will be explained in the next section. For this modified strategy the configuration only requires the issuer URL. The strategy configuration may be done by the following example
-
-    passport.use(new OpenIdConnectStrategy({
-        // allows us to pass in the req from our route
-        passReqToCallback: true, //(lets us check if a user is logged in or not)
-        issuer: req.query.issuer
-
-    }
 
 
-## passport-openidconnect
-
-The remaining information that was originally required by passport-openidconnect is discovered and saved on this new strategy. The issuer information (authorization endpoint, token endpoint and userInfo endpoint) are discovered and the clientInfo are supposed to be saved on a JSON object in the `clientInfo.js` file. Each tuple of client information (clientID, clientSecret, callbackURL) is associated with its respective issuer URL. Then this feature considers that the proxy knows the information of all clients that it may interact with and also allows each issuer to be associated with only one client. An example of the `clientInfo.js` is presented below
-
-    module.exports = {
-      'http://example.issuerURL.org' : {
-        clientID      : CLIENT-ID,
-        clientSecret  : CLIENT-SECRET,
-        callbackURL   : CLIENT-CALLBACK,
-      }
-    };
-
+<B>Link for Video </B>:- https://drive.google.com/file/d/0B6Iki_STqg-jbjc4YTJ3cm9DSk0/view
